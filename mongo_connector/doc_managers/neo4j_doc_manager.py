@@ -62,10 +62,11 @@ class DocManager(DocManagerBase):
     metadata = { "_ts": timestamp }
     doc = self._formatter.format_document(doc)
     builder = NodesAndRelationshipsBuilder(doc, doc_type, doc_id, metadata)
-    self.apply_id_constraint(builder.doc_types)
+    #self.apply_id_constraint(builder.doc_types)
     tx = self.graph.cypher.begin()
-    for statement in builder.query_nodes.keys():
-      tx.append(statement, builder.query_nodes[statement])
+    for d in builder.query_nodes:
+      #print(d)
+      tx.append(d['query'], d['params'])
     for relationship in builder.relationships_query.keys():
       tx.append(relationship, builder.relationships_query[relationship])
     tx.commit()
@@ -81,9 +82,11 @@ class DocManager(DocManagerBase):
       doc_id = u(doc.pop("_id"))
       doc = self._formatter.format_document(doc)
       builder = NodesAndRelationshipsBuilder(doc, doc_type, doc_id, metadata)
-      self.apply_id_constraint(builder.doc_types)
-      for statement in builder.query_nodes.keys():
-        tx.append(statement, builder.query_nodes[statement])
+      #self.apply_id_constraint(builder.doc_types)
+      for d in builder.query_nodes:
+      #for statement in builder.query_nodes.keys():
+        #print(d)
+        tx.append(d['query'], d['parameters'])
       for relationship in builder.relationships_query.keys():
         tx.append(relationship, builder.relationships_query[relationship])
     tx.commit()

@@ -10,7 +10,7 @@ LOG = logging.getLogger(__name__)
 class NodesAndRelationshipsBuilder(object):
   def __init__(self, doc, doc_type, doc_id, metadata={}, doc_types=[]):
     self.doc_id = doc_id
-    self.query_nodes = {}
+    self.query_nodes = []
     self.relationships_query = {}
     self.metadata = metadata or {}
     self.doc_types = doc_types or []
@@ -33,7 +33,10 @@ class NodesAndRelationshipsBuilder(object):
         self.build_nodes_query(key, document[key], id)
       elif self.is_json_array(document[key]):
         for json in self.format_params(document[key]):
-          json_key = key + str(document[key].index(json))
+          #json_key = key + str(document[key].index(json))
+          json_key = key
+          #print(json_key)
+          #print(json)
           self.build_relationships_query(doc_type, json_key, id, id)
           self.build_nodes_query(json_key, json, id)
       elif self.is_multimensional_array(document[key]):
@@ -41,7 +44,8 @@ class NodesAndRelationshipsBuilder(object):
       else:
         parameters.update({ key: self.format_params(document[key]) })
     query = "CREATE (c:Document:`{doc_type}` {{parameters}})".format(doc_type=doc_type)
-    self.query_nodes.update({query: {"parameters":parameters}})
+    self.query_nodes.append({"query": query, "params": {"parameters": parameters}})
+    #print(self.query_nodes)
 
   def format_params(self, params):
     if (type(params) is list):
@@ -54,7 +58,7 @@ class NodesAndRelationshipsBuilder(object):
     doc_type = key.split("_id")[0]
     parameters = {'_id':document_key}
     statement = "MERGE (d:Document:`{doc_type}` {{ _id: {{parameters}}._id}})".format(doc_type=doc_type)
-    self.query_nodes.update({statement: {"parameters":parameters}})
+    self.query_nodes.append({"query": statement, "params": {"parameters":parameters}})
     self.build_relationships_query(root_type, doc_type, doc_id, document_key)
     self.explicit_ids.update({document_key: doc_type})
 
