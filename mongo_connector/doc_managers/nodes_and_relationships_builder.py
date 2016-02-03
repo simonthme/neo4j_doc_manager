@@ -52,6 +52,11 @@ class NodesAndRelationshipsBuilder(object):
     if document_key is None:
       return
     doc_type = key.split("_id")[0]
+
+    # ignore _id property of subdocuments
+    if not doc_type or doc_type == "":
+      return
+
     parameters = {'_id':document_key}
     statement = "MERGE (d:Document:`{doc_type}` {{ _id: {{parameters}}._id}})".format(doc_type=doc_type)
     self.query_nodes.update({statement: {"parameters":parameters}})

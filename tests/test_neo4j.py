@@ -30,6 +30,9 @@ class Neo4jTestCase(unittest.TestCase):
     cls.docman = DocManager('http://localhost:7474/db/data', auto_commit_interval=0)
 
   def _count(cls):
+    """
+    Return the number of nodes in the graph
+    """
     return cls.neo4j_conn.order
 
   def query(cls):
@@ -92,6 +95,34 @@ class TestNeo4j(Neo4jTestCase):
       self.assertEqual(result_set_1['_id'], str(result_set_2['_id']))
       self.assertEqual(result_set_1['name'], result_set_2['name'])
       self.connector.doc_managers[0].graph.delete_all()
+
+    def test_subdocument_with_id(self):
+      """
+      Test inserting a document with a subdocument containing an _id property.
+      In the current version of translating from document data model to property graph, the root level _id
+      field is included in all subdocument nodes in the graph. This test verifies there is no error when
+      inserting a document containing a subdocument with an _id property.
+
+      See https://github.com/neo4j-contrib/neo4j_doc_manager/issues/56
+
+      """
+
+      doc = {
+        '_id': 'root_level_object_id',
+        'name': 'Bob',
+        'location': {
+          '_id': 'sub_document_object_id',
+          'city': 'Missoula',
+          'state': 'Montana'
+        }
+      }
+
+      self.connector.doc_managers[0].upsert(doc, "test.test_id", 1)
+      assert_soon(lambda: self._count() > 0)
+      result_set = self.neo4j_conn.find_one("location")
+      self.assertNotEqual(result_set, None)
+      self.assertEqual(result_set['_id'], 'root_level_object_id') # expect subdocument _id to be ignored
+
 
     def test_remove(self):
       """Tests remove operations."""
