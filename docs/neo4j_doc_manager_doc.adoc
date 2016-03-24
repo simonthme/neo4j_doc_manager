@@ -36,7 +36,7 @@ Detailed documentation for the *DocManager* superclass and its protocol can be f
 The preferred method of installation is with the pip package manager:
 
 ```
-pip install neo4j-doc-manager --pre
+pip install neo4j-doc-manager
 ```
 
 ===== Alternate installation

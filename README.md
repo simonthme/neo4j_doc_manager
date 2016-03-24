@@ -17,7 +17,7 @@ You must have Python installed in order to use this project. Python 3 is recomme
 First, install neo4j_doc_manager with pip:
 
 ```
-pip install neo4j-doc-manager --pre
+pip install neo4j-doc-manager
 ```
 
 (You might need sudo privileges).
