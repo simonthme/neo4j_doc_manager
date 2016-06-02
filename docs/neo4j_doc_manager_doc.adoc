@@ -41,12 +41,12 @@ pip install neo4j-doc-manager
 
 ===== Alternate installation
 
-If you experience any issues with pip you may use the following installation method:
+You can install neo4j-doc-manager from Github source:
 
-First of all, install link:https://github.com/10gen-labs/mongo-connector[mongo-connector]. This can be easily done with the following command:
+First, install the project dependencies:
 
 ```
-pip install mongo-connector
+pip install -r requirements.txt
 ```
 
 Now install **neo4j_doc_manager** by cloning this repository and setting the `PYTHONPATH` to it's local directory:
@@ -55,12 +55,6 @@ Now install **neo4j_doc_manager** by cloning this repository and setting the `PY
 git clone https://github.com/neo4j-contrib/neo4j_doc_manager.git
 cd neo4j_doc_manager
 export PYTHONPATH=.
-```
-
-You also must install **py2neo**:
-
-```
-pip install py2neo
 ```
 
 ==== Start Neo4j and Mongo
