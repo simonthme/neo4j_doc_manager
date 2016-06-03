@@ -21,7 +21,7 @@ before_script:
   - wget dist.neo4j.org/neo4j-community-3.0.2-unix.tar.gz
   - tar -xzf neo4j-community-3.0.2-unix.tar.gz
   - echo 'dbms.memory.pagecache.size=1g' >> neo4j-community-3.0.2/conf/neo4j.conf
-  - echo 'dbms.security.auth_enabled=false >> neo4j-community-3.0.2/conf/neo4j.conf
+  - echo 'dbms.security.auth_enabled=false' >> neo4j-community-3.0.2/conf/neo4j.conf
   - echo 'dbms.memory.heap.max_size=1000' >> neo4j-community-3.0.2/conf/neo4j-wrapper.conf
   - echo 'dbms.memory.heap.initial_size=1000' >> neo4j-community-3.0.2/conf/neo4j-wrapper.conf
   - neo4j-community-3.0.2/bin/neo4j start
