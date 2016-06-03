@@ -38,7 +38,7 @@ package_metadata = {
         ],
     },
     "packages": packages,
-    "install_requires": ['mongo-connector>=2.1','py2neo==2.0.8','requests>=2.5.1'],
+    "install_requires": ['mongo-connector>=2.1','py2neo>=3.0.0','requests>=2.5.1'],
     "license": "Apache Software License",
     "classifiers": [
         "Development Status :: 5 - Production/Stable",

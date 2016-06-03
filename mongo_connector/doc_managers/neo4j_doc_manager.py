@@ -48,7 +48,7 @@ class DocManager(DocManagerBase):
   def apply_id_constraint(self, doc_types):
     for doc_type in doc_types:
       constraint = "CREATE CONSTRAINT ON (d:`{doc_type}`) ASSERT d._id IS UNIQUE".format(doc_type=doc_type)
-      self.graph.cypher.execute(constraint)
+      self.graph.run(constraint)
 
   def stop(self):
     """Stop the auto-commit thread."""
@@ -63,19 +63,19 @@ class DocManager(DocManagerBase):
     doc = self._formatter.format_document(doc)
     builder = NodesAndRelationshipsBuilder(doc, doc_type, doc_id, metadata)
     self.apply_id_constraint(builder.doc_types)
-    tx = self.graph.cypher.begin()
+    tx = self.graph.begin()
     for statement in builder.query_nodes.keys():
-      tx.append(statement, builder.query_nodes[statement])
+      tx.run(statement, builder.query_nodes[statement])
     for relationship in builder.relationships_query.keys():
-      tx.append(relationship, builder.relationships_query[relationship])
+      tx.run(relationship, builder.relationships_query[relationship])
     tx.commit()
 
   @wrap_exceptions
   def bulk_upsert(self, docs, namespace, timestamp):
     """Insert multiple documents into Neo4j."""
     """Maximum chunk size is 1000. Transaction blocks won't have more than 1000 statements."""
-    metadata = { "_ts": timestamp }
-    tx = self.graph.cypher.begin()
+    metadata = {"_ts": timestamp}
+    tx = self.graph.begin()
     for doc in docs:
       index, doc_type = self._index_and_mapping(namespace)
       doc_id = u(doc.pop("_id"))
@@ -83,21 +83,21 @@ class DocManager(DocManagerBase):
       builder = NodesAndRelationshipsBuilder(doc, doc_type, doc_id, metadata)
       self.apply_id_constraint(builder.doc_types)
       for statement in builder.query_nodes.keys():
-        tx.append(statement, builder.query_nodes[statement])
+        tx.run(statement, builder.query_nodes[statement])
       for relationship in builder.relationships_query.keys():
-        tx.append(relationship, builder.relationships_query[relationship])
+        tx.run(relationship, builder.relationships_query[relationship])
     tx.commit()
 
   @wrap_exceptions
   def update(self, document_id, update_spec, namespace, timestamp):
     doc_id = u(document_id)
-    tx = self.graph.cypher.begin()
+    tx = self.graph.begin()
     index, doc_type = self._index_and_mapping(namespace)
     updater = NodesAndRelationshipsUpdater()
     updater.run_update(update_spec, doc_id, doc_type)
     for statement in updater.statements_with_params:
       for key in statement.keys():
-        tx.append(key, statement[key])
+        tx.run(key, statement[key])
     tx.commit()
 
   @wrap_exceptions
@@ -106,15 +106,15 @@ class DocManager(DocManagerBase):
     doc_id = u(document_id)
     index, doc_type = self._index_and_mapping(namespace)
     params_dict = {"doc_id": doc_id}
-    tx = self.graph.cypher.begin()
+    tx = self.graph.begin()
     statement = "MATCH (d:Document) WHERE d._id={doc_id} OPTIONAL MATCH (d)-[r]-() DELETE d, r"
-    tx.append(statement, params_dict)
+    tx.run(statement, params_dict)
     tx.commit()
 
   @wrap_exceptions
   def search(self, start_ts, end_ts):
     statement = "MATCH (d:Document) WHERE d._ts>={start_ts} AND d._ts<={end_ts} RETURN d".format(start_ts=start_ts, end_ts=end_ts)
-    results = self.graph.cypher.execute(statement)
+    results = self.graph.run(statement)
     return results
 
 
