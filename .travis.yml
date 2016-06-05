@@ -1,12 +1,12 @@
 language: python
 sudo: false
+jdk:
+  - oraclejdk8
 python:
   - "2.7"
   - "3.3"
   - "3.4"
   - "3.5"
-jdk:
-  - oraclejdk8
 install:
   - "pip install requests"
   - "pip install unittest2"
@@ -14,7 +14,6 @@ install:
   - "pip install pymongo==2.9"
   - "pip install mongo-connector"
   - "pip install mongo-orchestration==0.3.1"
-
 env:
   - PYTHONPATH=.
 before_script:
