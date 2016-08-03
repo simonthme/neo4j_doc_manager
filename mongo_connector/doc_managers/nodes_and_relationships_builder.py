@@ -5,6 +5,9 @@ according to a Mongo document.
 import re
 import logging
 
+from bson.objectid import ObjectId
+from mongo_connector.compat import u
+
 LOG = logging.getLogger(__name__)
 
 class NodesAndRelationshipsBuilder(object):
@@ -26,6 +29,11 @@ class NodesAndRelationshipsBuilder(object):
       if self.is_reference(key):
         self.build_node_with_reference(doc_type, key, id, document[key])
         continue
+      if self.is_objectid(document[key]):
+        parameters.update({key: u(document[key])})
+        self.build_node_with_reference(doc_type, key, id, document[key])
+        continue
+      #TODO: handle arrays of ObjectIds
       if document[key] is None:
         continue
       elif self.is_dict(document[key]):
@@ -63,6 +71,15 @@ class NodesAndRelationshipsBuilder(object):
     self.build_relationships_query(root_type, doc_type, doc_id, document_key)
     self.explicit_ids.update({document_key: doc_type})
 
+  def build_node_with_objectid_reference(self, root_type, key, doc_id, document_key):
+    if document_key is None:
+      return
+
+    parameters = {'_id': u(document_key)}
+    statement = "MERGE (d:Document {{_id: {{parameters}}._id}})"
+    self.query_nodes.update({statement: {"parameters": parameters}})
+    self.build_relationships_query(root_type, 'Document', doc_id, document_key) #FIXME: missing doc_type
+
   def is_dict(self, doc_key):
     return (type(doc_key) is dict)
 
@@ -71,6 +88,9 @@ class NodesAndRelationshipsBuilder(object):
 
   def is_multimensional_array(self, doc_key):
     return ((type(doc_key) is list) and (doc_key) and (type(doc_key[0]) is list))
+
+  def is_objectid(selfself, doc_key):
+    return isinstance(doc_key, ObjectId)
 
   def flatenned_property(self, key, doc_key):
     parameters = {}

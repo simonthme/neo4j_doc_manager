@@ -10,6 +10,7 @@ sys.path[0:0] = [""]
 
 from gridfs import GridFS
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 from py2neo import Graph, Node
 
 from tests import unittest, doc_test_double_nested, double_nested_doc, doc_without_id, doc_test, doc_id, doc_array_test, simple_doc, doc_rel, doc_explicit_rel_id
@@ -295,6 +296,21 @@ class Neo4jTestCase(unittest.TestCase):
       self.assertIsNot(n["main-title"], "simple title")
     self.tearDown
 
+  def test_upsert_doc_with_objectid(self):
+    '''
+    Test that ObjectId properties in a document can be parsed and handled properly
+    '''
+    test_doc = {'_id': 'mydocid', 'name': 'Bob'}
+    test_doc['some_objectid'] = ObjectId()
+    print(test_doc)
+    self.docman.upsert(test_doc, 'test.docwithobjectid', 1)
+    #self.assertGreaterEqual(self.graph.size, 1)
+    nodes = self.graph.find('docwithobjectid')
+    self.assertIsNotNone(nodes)
+    for n in nodes:
+      print(n)
+      self.assertIn('some_objectid', n.properties.keys())
+    self.tearDown
 
   def test_remove(self):
     docc = simple_doc
