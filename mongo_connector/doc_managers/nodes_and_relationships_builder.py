@@ -42,6 +42,7 @@ class NodesAndRelationshipsBuilder(object):
       elif self.is_json_array(document[key]):
         for json in self.format_params(document[key]):
           json_key = key + str(document[key].index(json))
+          print(json_key)
           self.build_relationships_query(doc_type, json_key, id, id)
           self.build_nodes_query(json_key, json, id)
       elif self.is_multimensional_array(document[key]):

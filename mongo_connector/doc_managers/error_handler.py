@@ -96,6 +96,10 @@ class ErrorHandler(object):
     database_error: Neo4jOperationFailed,
     constraint_creation_failure: Neo4jOperationFailed,
     constraint_drop_failure: Neo4jOperationFailed,
+    AttributeError: Neo4jOperationFailed,
+    TypeError: Neo4jOperationFailed,
+    NameError: Neo4jOperationFailed,
+    RuntimeError: Neo4jOperationFailed,
     index_creation_failure: Neo4jOperationFailed,
     index_drop_failure: Neo4jOperationFailed,
     schema_no_such_label: Neo4jOperationFailed,
@@ -110,11 +114,8 @@ class ErrorHandler(object):
     transient_error: Neo4jOperationFailed,
     unknown_failure: Neo4jOperationFailed,
     external_resource_failure: Neo4jOperationFailed,
-    acquire_lock_timeout: Neo4jOperationFailed,
-    AttributeError: Neo4jOperationFailed,
-    TypeError: Neo4jOperationFailed,
-    NameError: Neo4jOperationFailed,
-    RuntimeError: Neo4jOperationFailed
+    acquire_lock_timeout: Neo4jOperationFailed
+
     
     }
 
