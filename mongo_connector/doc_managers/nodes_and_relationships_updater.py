@@ -29,7 +29,7 @@ class NodesAndRelationshipsUpdater(object):
               print(update_value_split)
               doc_type = update_value_split[0]
               print(doc_type)
-              update_value_list[update_value] = update_value_list.pop(update_value)
+              update_value_list[update_value_split[1]] = update_value_list(update_value)
               update_value = update_value_split[1]
               print(update_value)
               print(update_value_list)
