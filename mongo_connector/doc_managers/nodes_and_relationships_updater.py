@@ -20,19 +20,14 @@ class NodesAndRelationshipsUpdater(object):
       if spec=='$set':
         update_value_list = update_spec['$set']
         for update_value in update_value_list.keys():
-          print(update_value)
           if (self.is_relationship_update(update_value_list[update_value])):
             self.update_relationship(update_value_list[update_value], doc_type, update_value, doc_id)
           else:
             if ('.' in update_value):
               update_value_split = update_value.split('.')
-              print(update_value_split)
               doc_type = update_value_split[0]
-              print(doc_type)
               update_value_list[update_value_split[1]] = update_value_list.pop(update_value)
               update_value = update_value_split[1]
-              print(update_value)
-              print(update_value_list)
               set_dict.update({update_value: update_value_list[update_value]})
             else:
               set_dict.update({update_value: update_value_list[update_value]})
