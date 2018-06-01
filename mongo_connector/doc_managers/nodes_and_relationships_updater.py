@@ -31,6 +31,7 @@ class NodesAndRelationshipsUpdater(object):
               print(doc_type)
               update_value = update_value_split[1]
               print(update_value)
+              print(update_value_list)
               set_dict.update({update_value: update_value_list[update_value]})
             else:
               set_dict.update({update_value: update_value_list[update_value]})
