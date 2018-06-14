@@ -30,6 +30,7 @@ class NodesAndRelationshipsBuilder(object):
         self.build_node_with_reference(doc_type, key, id, document[key])
         continue
       if self.is_objectid(document[key]):
+        print('BUILD NODE REFERENCE')
         parameters.update({key: u(document[key])})
         self.build_node_with_reference(doc_type, key, id, document[key])
         continue
