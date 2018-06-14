@@ -51,7 +51,8 @@ class NodesAndRelationshipsBuilder(object):
         print('TRYBING TO BUILD DA SHIT')
         parameters.update({ key: self.format_params(document[key]) })
     print("DOING IT YAAAAAAAAAAAAAAAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-    query = "CREATE (c:Document:`{doc_type}` {{parameters}})".format(doc_type=doc_type)
+    #query = "CREATE (c:Document:`{doc_type}` {{parameters}})".format(doc_type=doc_type)
+    query = "MERGE (c:Document:`{doc_type}` {{parameters}})".format(doc_type=doc_type)
     self.query_nodes.update({query: {"parameters":parameters}})
 
   def format_params(self, params):
