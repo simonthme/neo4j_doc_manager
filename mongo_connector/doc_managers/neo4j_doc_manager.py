@@ -65,10 +65,8 @@ class DocManager(DocManagerBase):
     self.apply_id_constraint(builder.doc_types)
     tx = self.graph.cypher.begin()
     for statement in builder.query_nodes.keys():
-      print('STATEMENT UPSERT : ' + statement)
       tx.append(statement, builder.query_nodes[statement])
     for relationship in builder.relationships_query.keys():
-      print('RELATIONSHIP UPSERT: ' + relationship)
       tx.append(relationship, builder.relationships_query[relationship])
     tx.commit()
 
@@ -85,10 +83,8 @@ class DocManager(DocManagerBase):
       builder = NodesAndRelationshipsBuilder(doc, doc_type, doc_id, metadata)
       self.apply_id_constraint(builder.doc_types)
       for statement in builder.query_nodes.keys():
-        print('STATEMENT : ' + statement)
         tx.append(statement, builder.query_nodes[statement])
       for relationship in builder.relationships_query.keys():
-        print('RELATIONSHIP : ' + relationship)
         tx.append(relationship, builder.relationships_query[relationship])
     tx.commit()
 
