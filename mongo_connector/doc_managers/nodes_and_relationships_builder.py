@@ -42,13 +42,13 @@ class NodesAndRelationshipsBuilder(object):
       elif self.is_json_array(document[key]):
         for json in self.format_params(document[key]):
           json_key = key + str(document[key].index(json))
-          print(json_key)
           self.build_relationships_query(doc_type, json_key, id, id)
           self.build_nodes_query(json_key, json, id)
       elif self.is_multimensional_array(document[key]):
         parameters.update(self.flatenned_property(key, document[key]))
       else:
         parameters.update({ key: self.format_params(document[key]) })
+        print('TRYBING TO BUILD DA SHIT')
     query = "CREATE (c:Document:`{doc_type}` {{parameters}})".format(doc_type=doc_type)
     self.query_nodes.update({query: {"parameters":parameters}})
 
@@ -65,7 +65,6 @@ class NodesAndRelationshipsBuilder(object):
     # ignore _id property of subdocuments
     if not doc_type or doc_type == "":
       return
-
     parameters = {'_id':document_key}
     statement = "MERGE (d:Document:`{doc_type}` {{ _id: {{parameters}}._id}})".format(doc_type=doc_type)
     self.query_nodes.update({statement: {"parameters":parameters}})
