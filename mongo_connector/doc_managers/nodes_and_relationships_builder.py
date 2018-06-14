@@ -47,8 +47,9 @@ class NodesAndRelationshipsBuilder(object):
       elif self.is_multimensional_array(document[key]):
         parameters.update(self.flatenned_property(key, document[key]))
       else:
-        parameters.update({ key: self.format_params(document[key]) })
         print('TRYBING TO BUILD DA SHIT')
+        parameters.update({ key: self.format_params(document[key]) })
+    print("DOING IT YAAAAAAAAAAAAAAAYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
     query = "CREATE (c:Document:`{doc_type}` {{parameters}})".format(doc_type=doc_type)
     self.query_nodes.update({query: {"parameters":parameters}})
 
